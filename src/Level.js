@@ -77,7 +77,12 @@ const BlockLimbo = ({ position = [0, 0, 0] }) => {
         const time = state.clock.getElapsedTime();
 
         const y = Math.sin(time + timeOffset) + 1.15; // 1.15 puts the obstacle above the floor
-        obstacleRef.current.setNextKinematicTranslation({ x: 0, y, z: 0 });
+        obstacleRef.current.setNextKinematicTranslation({
+            // you are using the position like this because otherwise those would be absolute values
+            x: position[0],
+            y: position[1] + y,
+            z: position[2],
+        });
     });
 
     return (
@@ -115,7 +120,7 @@ const Level = () => {
         <>
             <BlockStart position={[0, 0, 4]} />
             <BlockSpinner position={[0, 0, 0]} />
-            <BlockLimbo position={[0, 0, 0]} />
+            <BlockLimbo position={[0, 0, 4]} />
         </>
     );
 };
