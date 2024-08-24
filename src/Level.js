@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { RigidBody } from "@react-three/rapier";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
@@ -27,12 +27,15 @@ const BlockStart = ({ position = [0, 0, 0] }) => {
 
 const BlockSpinner = ({ position = [0, 0, 0] }) => {
     const obstacleRef = useRef(null);
+    const [speed] = useState(
+        () => (Math.random() + 0.2) * (Math.random() < 0.5 ? -1 : 1)
+    ); // 0.2 is a threshold to not make the obstacles slower than 0.2, while the second part of Math.random is done to give a 50% chance of rotating in the opposite way
 
     useFrame((state) => {
         const time = state.clock.getElapsedTime();
 
         const rotation = new THREE.Quaternion();
-        rotation.setFromEuler(new THREE.Euler(0, time, 0));
+        rotation.setFromEuler(new THREE.Euler(0, time * speed, 0)); // we multiply the time by the speed to give obstacles more randomness when they spin otherwise they would spin at the same speed
         obstacleRef.current.setNextKinematicRotation(rotation);
     });
 
