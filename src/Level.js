@@ -11,7 +11,7 @@ const floor2Material = new THREE.MeshStandardMaterial({ color: "greenyellow" });
 const obstacleMaterial = new THREE.MeshStandardMaterial({ color: "orangered" });
 const wallMaterial = new THREE.MeshStandardMaterial({ color: "slategray" });
 
-const BlockStart = ({ position = [0, 0, 0] }) => {
+export const BlockStart = ({ position = [0, 0, 0] }) => {
     return (
         <group position={position}>
             {/* Floor */}
@@ -26,7 +26,7 @@ const BlockStart = ({ position = [0, 0, 0] }) => {
     );
 };
 
-const BlockEnd = ({ position = [0, 0, 0] }) => {
+export const BlockEnd = ({ position = [0, 0, 0] }) => {
     const hamburger = useGLTF("./hamburger.glb");
 
     hamburger.scene.children.forEach((mesh) => {
@@ -56,7 +56,7 @@ const BlockEnd = ({ position = [0, 0, 0] }) => {
     );
 };
 
-const BlockSpinner = ({ position = [0, 0, 0] }) => {
+export const BlockSpinner = ({ position = [0, 0, 0] }) => {
     const obstacleRef = useRef(null);
     const [speed] = useState(
         () => (Math.random() + 0.2) * (Math.random() < 0.5 ? -1 : 1)
@@ -100,7 +100,7 @@ const BlockSpinner = ({ position = [0, 0, 0] }) => {
     );
 };
 
-const BlockLimbo = ({ position = [0, 0, 0] }) => {
+export const BlockLimbo = ({ position = [0, 0, 0] }) => {
     const obstacleRef = useRef(null);
     const [timeOffset] = useState(() => Math.random() * Math.PI * 2); // 0.2 is a threshold to not make the obstacles slower than 0.2, while the second part of Math.random is done to give a 50% chance of rotating in the opposite way
 
@@ -146,7 +146,7 @@ const BlockLimbo = ({ position = [0, 0, 0] }) => {
     );
 };
 
-const BlockAxe = ({ position = [0, 0, 0] }) => {
+export const BlockAxe = ({ position = [0, 0, 0] }) => {
     const obstacleRef = useRef(null);
     const [timeOffset] = useState(() => Math.random() * Math.PI * 2);
 
@@ -191,16 +191,13 @@ const BlockAxe = ({ position = [0, 0, 0] }) => {
     );
 };
 
-const Level = () => {
+export const Level = ({
+    count = 5,
+    types = [BlockSpinner, BlockAxe, BlockLimbo],
+}) => {
     return (
         <>
-            <BlockStart position={[0, 0, 16]} />
-            <BlockSpinner position={[0, 0, 12]} />
-            <BlockLimbo position={[0, 0, 8]} />
-            <BlockAxe position={[0, 0, 4]} />
-            <BlockEnd position={[0, 0, 0]} />
+            <BlockStart position={[0, 0, 0]} />
         </>
     );
 };
-
-export default Level;
