@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { RigidBody, useRapier } from "@react-three/rapier";
 import { useFrame } from "@react-three/fiber";
 import { useKeyboardControls } from "@react-three/drei";
@@ -8,6 +8,9 @@ const Player = () => {
     const [subscribeKeys, getKeys] = useKeyboardControls(); // The 2 destructured functions: subscribeKeys is used to subscribe to key changes (useful to know when the jump key has been pressed), getKeys is a function used to get the current states of the keys (useful to know if the WASD keys are being pressed)
     const { rapier, world } = useRapier();
     const marbleRef = useRef();
+
+    const [smoothedCameraPosition] = useState(() => new THREE.Vector3());
+    const [smoothedCameraTarget] = useState(() => new THREE.Vector3());
 
     const jump = () => {
         // All of the following chunk of code solves the issue where the ball can jump infinitely even when mid-air, so we are casting a ray from the ball towards the floor origin and if the distance is too high, the ball won't be able to jump
@@ -91,6 +94,10 @@ const Player = () => {
         const cameraTarget = new THREE.Vector3();
         cameraTarget.copy(marbleRefPosition);
         cameraTarget.y += 0.25; // this way the camera will look slightly above the marble
+
+        // Lerping
+        smoothedCameraPosition.lerp(cameraPosition, 0.1); // Takes the initial value and each frame it brings it a little closer to the destination
+        smoothedCameraTarget.lerp(cameraTarget, 0.1);
 
         state.camera.position.copy(cameraPosition);
         state.camera.lookAt(cameraTarget);
