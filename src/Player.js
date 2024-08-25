@@ -9,7 +9,9 @@ const Player = () => {
     const { rapier, world } = useRapier();
     const marbleRef = useRef();
 
-    const [smoothedCameraPosition] = useState(() => new THREE.Vector3());
+    const [smoothedCameraPosition] = useState(
+        () => new THREE.Vector3(10, 10, 10)
+    ); // initial values to prevent the camera from spawning from beneath the floor
     const [smoothedCameraTarget] = useState(() => new THREE.Vector3());
 
     const jump = () => {
@@ -96,8 +98,8 @@ const Player = () => {
         cameraTarget.y += 0.25; // this way the camera will look slightly above the marble
 
         // Lerping
-        smoothedCameraPosition.lerp(cameraPosition, 0.1); // Takes the initial value and each frame it brings it a little closer to the destination
-        smoothedCameraTarget.lerp(cameraTarget, 0.1);
+        smoothedCameraPosition.lerp(cameraPosition, 5 * delta); // Takes the initial value and each frame it brings it a little closer to the destination
+        smoothedCameraTarget.lerp(cameraTarget, 5 * delta);
 
         state.camera.position.copy(cameraPosition);
         state.camera.lookAt(cameraTarget);
