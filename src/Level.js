@@ -212,6 +212,7 @@ export const Level = ({
             {blocks.map((Block, i) => (
                 <Block key={i} position={[0, 0, -(i + 1) * 4]} />
             ))}
+            <BlockEnd position={[0, 0, -(count + 1) * 4]} />
         </>
     );
 };
