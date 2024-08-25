@@ -8,19 +8,32 @@ export default create((set) => {
          */
         phase: "ready",
         start: () => {
-            set(() => {
+            set((state) => {
                 // The set function returns the new, updated, state, useful for us so that we can update the phase
-                return { phase: "playing" };
+                if (state.phase === "ready") {
+                    // We prevent the start method from being spam called whenever the player presses a key
+                    return { phase: "playing" };
+                } else {
+                    return {};
+                }
             });
         },
         restart: () => {
-            set(() => {
-                return { phase: "ready" };
+            set((state) => {
+                if (state.phase === "playing" || state.phase === "ended") {
+                    return { phase: "ready" };
+                } else {
+                    return {};
+                }
             });
         },
         end: () => {
-            set(() => {
-                return { phase: "ended" };
+            set((state) => {
+                if (state.phase === "playing") {
+                    return { phase: "ended" };
+                } else {
+                    return {};
+                }
             });
         },
     };
