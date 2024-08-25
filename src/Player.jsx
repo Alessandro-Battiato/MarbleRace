@@ -11,6 +11,7 @@ const Player = () => {
     const marbleRef = useRef();
 
     const start = useGame((state) => state.start);
+    const end = useGame((state) => state.end);
 
     const [smoothedCameraPosition] = useState(
         () => new THREE.Vector3(10, 10, 10)
