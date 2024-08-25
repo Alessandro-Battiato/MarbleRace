@@ -17,7 +17,7 @@ export const BlockStart = ({ position = [0, 0, 0] }) => {
             {/* Game Title */}
             <Float floatIntensity={0.25} rotationIntensity={0.25}>
                 <Text
-                    font="/bebas-neue-v9-latin-regular.woff"
+                    font="./bebas-neue-v9-latin-regular.woff"
                     scale={0.5}
                     maxWidth={0.25}
                     lineHeight={0.75}
@@ -50,6 +50,15 @@ export const BlockEnd = ({ position = [0, 0, 0] }) => {
 
     return (
         <group position={position}>
+            {/* Game end text */}
+            <Text
+                font="./bebas-neue-v9-latin-regular.woff"
+                scale={1}
+                position={[0, 2.25, 2]}
+            >
+                FINISH
+                <meshBasicMaterial toneMapped={false} />
+            </Text>
             {/* Floor */}
             <mesh
                 geometry={boxGeometry}
