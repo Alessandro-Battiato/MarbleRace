@@ -34,7 +34,23 @@ const Player = () => {
         }
     };
 
+    const reset = () => {
+        // Set position and translation and angular forces
+        marbleRef.current.setTranslation({ x: 0, y: 1, z: 0 });
+        marbleRef.current.setLinvel({ x: 0, y: 0, z: 0 });
+        marbleRef.current.setAngvel({ x: 0, y: 0, z: 0 });
+    };
+
     useEffect(() => {
+        const unsubscribeReset = useGame.subscribe(
+            (state) => state.phase, // selector
+            (value) => {
+                if (value === "ready") {
+                    reset();
+                }
+            }
+        );
+
         // To listen to the "Jump" event we use the subscribeKeys
         const unsubscribeJump = subscribeKeys(
             (state) => state.jump,
@@ -57,6 +73,7 @@ const Player = () => {
             // So we just use this cleanup function to solve the issue
             unsubscribeJump();
             unsubscribeAny();
+            unsubscribeReset();
         };
     }, []);
 
