@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { RigidBody } from "@react-three/rapier";
 import { useFrame } from "@react-three/fiber";
 import { useKeyboardControls } from "@react-three/drei";
@@ -6,6 +6,22 @@ import { useKeyboardControls } from "@react-three/drei";
 const Player = () => {
     const [subscribeKeys, getKeys] = useKeyboardControls(); // The 2 destructured functions: subscribeKeys is used to subscribe to key changes (useful to know when the jump key has been pressed), getKeys is a function used to get the current states of the keys (useful to know if the WASD keys are being pressed)
     const marbleRef = useRef();
+
+    const jump = () => {
+        marbleRef.current.applyImpulse({ x: 0, y: 0.5, z: 0 });
+    };
+
+    useEffect(() => {
+        // To listen to the "Jump" event we use the subscribeKeys
+        subscribeKeys(
+            (state) => state.jump,
+            (value) => {
+                if (value) {
+                    // The jump action needs to work immediately when the player presses the spacebar, not when it is released
+                }
+            }
+        );
+    }, []);
 
     useFrame((state, delta) => {
         const { forward, backward, leftward, rightward } = getKeys();
