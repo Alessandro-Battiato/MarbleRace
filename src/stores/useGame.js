@@ -8,6 +8,11 @@ export default create(
         return {
             blocksCount: 3,
             /**
+             * Time
+             */
+            startTime: 0,
+            endTime: 0,
+            /**
              * Phases
              */
             phase: "ready",
@@ -16,7 +21,7 @@ export default create(
                     // The set function returns the new, updated, state, useful for us so that we can update the phase
                     if (state.phase === "ready") {
                         // We prevent the start method from being spam called whenever the player presses a key
-                        return { phase: "playing" };
+                        return { phase: "playing", startTime: Date.now() };
                     } else {
                         return {};
                     }
@@ -35,7 +40,7 @@ export default create(
             end: () => {
                 set((state) => {
                     if (state.phase === "playing") {
-                        return { phase: "ended" };
+                        return { phase: "ended", endTime: Date.now() };
                     } else {
                         return {};
                     }
