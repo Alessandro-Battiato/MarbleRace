@@ -8,7 +8,7 @@ export default function Lights() {
         // We are basically trying to fix the issue where the shadow, after the player moves for a bit, disappears, so we are basically trying to make the light follow the player along the z axis
         // We are also subtracting 4 to both the light position and the target in order to move both a bit forward
         lightRef.current.position.z = state.camera.position.z + 1 - 4; // the + 1 makes the shadow spawn a bit backwards
-        lightRef.current.target.position.z = state.camera.position.z - 4; // The target of the light, unless it's visible to the scene, will cause the matrices to not be updated by Three.js because that's just how it works, if an object isn't visible the matrices won't be updated so this line of code won't be enough
+        lightRef.current.target.position.z = state.camera.position.z - 4; // The target of the light, unless it's visible to the scene, will cause the matrices to not be updated by Three.jsx because that's just how it works, if an object isn't visible the matrices won't be updated so this line of code won't be enough
         lightRef.current.target.updateMatrixWorld(); // This line fixes the issue mentioned above, so the shadow of the marble now works correctly
     });
 
