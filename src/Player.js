@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { RigidBody, useRapier } from "@react-three/rapier";
 import { useFrame } from "@react-three/fiber";
 import { useKeyboardControls } from "@react-three/drei";
+import * as THREE from "three";
 
 const Player = () => {
     const [subscribeKeys, getKeys] = useKeyboardControls(); // The 2 destructured functions: subscribeKeys is used to subscribe to key changes (useful to know when the jump key has been pressed), getKeys is a function used to get the current states of the keys (useful to know if the WASD keys are being pressed)
@@ -43,6 +44,9 @@ const Player = () => {
     }, []);
 
     useFrame((state, delta) => {
+        /**
+         * Controls
+         */
         const { forward, backward, leftward, rightward } = getKeys();
 
         // We set 1 impulse and 1 torque with these values because sometimes the player could press 2 buttons while airborne like forward and then right for example and this makes it work right
@@ -73,6 +77,23 @@ const Player = () => {
 
         marbleRef.current.applyImpulse(impulse);
         marbleRef.current.applyTorqueImpulse(torque);
+
+        /**
+         * Camera
+         */
+        const marbleRefPosition = marbleRef.current.translation();
+
+        const cameraPosition = new THREE.Vector3();
+        cameraPosition.copy(marbleRefPosition);
+        cameraPosition.z += 2.25;
+        cameraPosition.y += 0.65;
+
+        const cameraTarget = new THREE.Vector3();
+        cameraTarget.copy(marbleRefPosition);
+        cameraTarget.y += 0.25; // this way the camera will look slightly above the marble
+
+        state.camera.position.copy(cameraPosition);
+        state.camera.lookAt(cameraTarget);
     });
 
     return (
