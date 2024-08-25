@@ -12,6 +12,7 @@ const Player = () => {
 
     const start = useGame((state) => state.start);
     const end = useGame((state) => state.end);
+    const blocksCount = useGame((state) => state.blocksCount);
 
     const [smoothedCameraPosition] = useState(
         () => new THREE.Vector3(10, 10, 10)
@@ -113,6 +114,14 @@ const Player = () => {
 
         state.camera.position.copy(cameraPosition);
         state.camera.lookAt(cameraTarget);
+
+        /**
+         * Phases
+         */
+        if (marbleRefPosition.z < -(blocksCount * 4 + 2)) {
+            // If we are at the end of the level
+            end();
+        }
     });
 
     return (
