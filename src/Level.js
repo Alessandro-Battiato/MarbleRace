@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { RigidBody } from "@react-three/rapier";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
@@ -195,9 +195,23 @@ export const Level = ({
     count = 5,
     types = [BlockSpinner, BlockAxe, BlockLimbo],
 }) => {
+    const blocks = useMemo(() => {
+        const blocks = [];
+
+        for (let i = 0; i < count; i++) {
+            const type = types[Math.floor(Math.random() * types.length)]; // Math.floor to get a value between 0 and the number of the types
+            blocks.push(type);
+        }
+
+        return blocks;
+    }, [count, types]);
+
     return (
         <>
             <BlockStart position={[0, 0, 0]} />
+            {blocks.map((Block, i) => (
+                <Block key={i} />
+            ))}
         </>
     );
 };
