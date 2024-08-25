@@ -3,11 +3,14 @@ import { RigidBody, useRapier } from "@react-three/rapier";
 import { useFrame } from "@react-three/fiber";
 import { useKeyboardControls } from "@react-three/drei";
 import * as THREE from "three";
+import useGame from "./stores/useGame";
 
 const Player = () => {
     const [subscribeKeys, getKeys] = useKeyboardControls(); // The 2 destructured functions: subscribeKeys is used to subscribe to key changes (useful to know when the jump key has been pressed), getKeys is a function used to get the current states of the keys (useful to know if the WASD keys are being pressed)
     const { rapier, world } = useRapier();
     const marbleRef = useRef();
+
+    const start = useGame((state) => state.start);
 
     const [smoothedCameraPosition] = useState(
         () => new THREE.Vector3(10, 10, 10)
@@ -40,11 +43,17 @@ const Player = () => {
             }
         );
 
+        const unsubscribeAny = subscribeKeys(() => {
+            // Whenever the player presses any arrow key, the game will start
+            start();
+        });
+
         return () => {
             // This is a fix for a bug that potentially could never occur in production, but we still fix it for cleaner code
             // In fact, whenever we change something in the code, and we do not reload, the hod module replacement will make the changes occur but, we are going to basically destroy the player and re-subscribe for the jump action, and this will make the player jump twice
             // So we just use this cleanup function to solve the issue
             unsubscribeJump();
+            unsubscribeAny();
         };
     }, []);
 
