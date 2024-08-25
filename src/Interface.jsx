@@ -17,11 +17,11 @@ const Interface = () => {
             {/* Time */}
             <div className="time">0.00</div>
             {/* Restart */}
-            {phase === "ended" ? (
+            {phase === "ended" && (
                 <div onClick={restart} className="restart">
                     Restart
                 </div>
-            ) : null}
+            )}
             {/* Controls */}
             <div className="controls">
                 <div className="raw">
