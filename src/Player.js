@@ -47,6 +47,8 @@ const Player = () => {
             restitution="0.2"
             friction={1} // Same reason explained in the Level file
             position={[0, 1, 0]}
+            linearDamping={0.5} // the linear and angular damping will make the player able to stop after moving for a while
+            angularDamping={0.5}
         >
             <mesh
                 castShadow // We are only casting a shadow and not receiving it for gameplay purposes, so we can still see the ball, even if it looks less realistic
