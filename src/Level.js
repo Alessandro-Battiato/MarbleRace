@@ -1,5 +1,5 @@
 import React, { useMemo, useRef, useState } from "react";
-import { RigidBody } from "@react-three/rapier";
+import { CuboidCollider, RigidBody } from "@react-three/rapier";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
 import { useGLTF } from "@react-three/drei";
@@ -218,6 +218,13 @@ export const Bounds = ({ length = 1 }) => {
                 material={wallMaterial}
                 scale={[4, 1.5, 0.3]}
                 receiveShadow
+            />
+            {/* Collider for the floor to prevent the player from falling */}
+            <CuboidCollider
+                args={[2, 0.1, 2 * length]}
+                position={[0, -0.1, -(length * 2) + 2]}
+                restitution={0.2}
+                friction={1} // 1 is necessary in order to "slow down" the player a bit otherwise the marble will slide super fast
             />
         </RigidBody>
     );
