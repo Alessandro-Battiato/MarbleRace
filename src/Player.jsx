@@ -11,6 +11,7 @@ const Player = () => {
     const marbleRef = useRef();
 
     const start = useGame((state) => state.start);
+    const restart = useGame((state) => state.restart);
     const end = useGame((state) => state.end);
     const blocksCount = useGame((state) => state.blocksCount);
 
@@ -121,6 +122,10 @@ const Player = () => {
         if (marbleRefPosition.z < -(blocksCount * 4 + 2)) {
             // If we are at the end of the level
             end();
+        }
+        if (marbleRefPosition.y < -4) {
+            // If the player falls from the floor level
+            restart();
         }
     });
 
