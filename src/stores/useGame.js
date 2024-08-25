@@ -25,6 +25,7 @@ export default create(
             restart: () => {
                 set((state) => {
                     if (state.phase === "playing" || state.phase === "ended") {
+                        // Whenever the phase changes to ready, this will automatically trigger the reset method defined in the Player file, and if you remember, you're using selectors to gather these values so everything will be automatically re-rendered and thus everything works because the phase changes, React detects the change and the reset method is invoked
                         return { phase: "ready" };
                     } else {
                         return {};
