@@ -1,26 +1,45 @@
 import React, { useEffect, useRef } from "react";
-import { RigidBody } from "@react-three/rapier";
+import { RigidBody, useRapier } from "@react-three/rapier";
 import { useFrame } from "@react-three/fiber";
 import { useKeyboardControls } from "@react-three/drei";
 
 const Player = () => {
     const [subscribeKeys, getKeys] = useKeyboardControls(); // The 2 destructured functions: subscribeKeys is used to subscribe to key changes (useful to know when the jump key has been pressed), getKeys is a function used to get the current states of the keys (useful to know if the WASD keys are being pressed)
+    const { rapier, world } = useRapier();
     const marbleRef = useRef();
 
     const jump = () => {
-        marbleRef.current.applyImpulse({ x: 0, y: 0.5, z: 0 });
+        // All of the following chunk of code solves the issue where the ball can jump infinitely even when mid-air, so we are casting a ray from the ball towards the floor origin and if the distance is too high, the ball won't be able to jump
+        const origin = marbleRef.current.translation();
+        origin.y -= 0.31;
+        const direction = { x: 0, y: -1, z: 0 };
+        const ray = new rapier.Ray(origin, direction);
+        const hit = world.castRay(ray, 10, true); // 10 is the max distance for the ray while the True parameter fixes the wrong value of the time of impact, because up until now the cast ray considered the origin of the floor "beneath" the actual floor where the ball is currently standing up, because the floor is thick so the origin was considered like at the very bottom, but giving the true parameter, the ray will consider as the floor being "filled" and thus the origin will correctly be considered right underneath the ball, where it's colliding with the floor
+
+        if (hit.timeOfImpact < 0.15) {
+            // The higher the value, the higher the distance between the ball and the floor, so the ball should only jump if underneath the specified value
+            marbleRef.current.applyImpulse({ x: 0, y: 0.5, z: 0 });
+        }
     };
 
     useEffect(() => {
         // To listen to the "Jump" event we use the subscribeKeys
-        subscribeKeys(
+        const unsubscribeJump = subscribeKeys(
             (state) => state.jump,
             (value) => {
                 if (value) {
                     // The jump action needs to work immediately when the player presses the spacebar, not when it is released
+                    jump();
                 }
             }
         );
+
+        return () => {
+            // This is a fix for a bug that potentially could never occur in production, but we still fix it for cleaner code
+            // In fact, whenever we change something in the code, and we do not reload, the hod module replacement will make the changes occur but, we are going to basically destroy the player and re-subscribe for the jump action, and this will make the player jump twice
+            // So we just use this cleanup function to solve the issue
+            unsubscribeJump();
+        };
     }, []);
 
     useFrame((state, delta) => {
@@ -34,6 +53,7 @@ const Player = () => {
         const impulseStrength = 0.6 * delta;
         const torqueStrength = 0.2 * delta;
 
+        // The controls are thought as to make the player move even if slightly when airborne, as done already in many other games
         if (forward) {
             impulse.z -= impulseStrength; // To move towards the burger, the end of the level, the ball has to move on the z axis
             torque.x -= torqueStrength; // To move sideways, it moves on the x axis
