@@ -191,6 +191,38 @@ export const BlockAxe = ({ position = [0, 0, 0] }) => {
     );
 };
 
+export const Bounds = ({ length = 1 }) => {
+    // We only need 1 rigid body because by default R3F creates 3 cuboid colliders for each mesh and it's ok
+    return (
+        <RigidBody restitution={0.2} friction={0} type="fixed">
+            {/* Right wall */}
+            <mesh
+                position={[2.15, 0.75, -(length * 2) + 2]}
+                geometry={boxGeometry}
+                material={wallMaterial}
+                scale={[0.3, 1.5, 4 * length]}
+                castShadow
+            />
+            {/* Left wall */}
+            <mesh
+                position={[-2.15, 0.75, -(length * 2) + 2]}
+                geometry={boxGeometry}
+                material={wallMaterial}
+                scale={[0.3, 1.5, 4 * length]}
+                receiveShadow // this doesn't need to cast shadows because of the light source
+            />
+            {/* End level wall */}
+            <mesh
+                position={[0, 0.75, -(length * 4) + 2]}
+                geometry={boxGeometry}
+                material={wallMaterial}
+                scale={[4, 1.5, 0.3]}
+                receiveShadow
+            />
+        </RigidBody>
+    );
+};
+
 export const Level = ({
     count = 5,
     types = [BlockSpinner, BlockAxe, BlockLimbo],
@@ -213,6 +245,7 @@ export const Level = ({
                 <Block key={i} position={[0, 0, -(i + 1) * 4]} />
             ))}
             <BlockEnd position={[0, 0, -(count + 1) * 4]} />
+            <Bounds length={count + 2} />
         </>
     );
 };
